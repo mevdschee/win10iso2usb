@@ -30,7 +30,30 @@ if [ -z $CHOICE ]; then
    clear
    exit 0
 fi
+(( ITEM=($CHOICE * 2) ))
+ISOFILE=${array[ITEM]}
+
+i=1 #Index counter for adding to array
+j=1 #Option menu value generator
+
+while read line
+do
+   array[ $i ]=$j
+   (( j++ ))
+   array[ ($i + 1) ]=$line
+   (( i=($i+2) ))
+done < <(lsblk --nodeps -n --output TRAN,NAME,SIZE,VENDOR,MODEL | grep '^usb' | tr -s ' ' | sed 's/ /: /2' | cut '-d ' '-f2-')
+
+#Build the menu with variables & dynamic content
+CHOICE=$(dialog --clear --backtitle "win10iso2usb" --title "Step 2/3: Select USB drive" --menu "Choose a drive:" $HEIGHT $WIDTH $CHOICE_HEIGHT "${array[@]}" 2>&1 >$(tty))
+
+if [ -z $CHOICE ]; then
+   clear
+   exit 0
+fi
 clear
 (( ITEM=($CHOICE * 2) ))
-FILE=${array[ITEM]}
-echo $FILE
+USBDRIVE=${array[ITEM]}
+
+echo $ISOFILE
+echo $USBDRIVE
