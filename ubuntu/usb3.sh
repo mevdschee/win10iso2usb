@@ -2,9 +2,7 @@
 
 # source: https://unix.stackexchange.com/questions/40143/how-to-know-if-dev-sdx-is-a-connected-usb-or-hdd
 
-lsblk --nodeps --output NAME,TRAN,RM
-
-
+lsblk --nodeps -n --output TRAN,NAME,SIZE,VENDOR,MODEL | grep '^usb' | tr -s ' ' | sed 's/ /: /2' | cut '-d ' '-f2-'
 
 # https://unix.stackexchange.com/questions/70738/what-is-the-fastest-way-to-extract-an-iso
 

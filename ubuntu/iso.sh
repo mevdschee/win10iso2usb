@@ -36,4 +36,7 @@ CHOICE=$(dialog --clear \
                 "${array[@]}" \
                 2>&1 >$TERMINAL)
 
-echo $CHOICE
+clear
+(( ITEM=($CHOICE*2) ))
+FILE=${array[ITEM]}
+echo $FILE
