@@ -23,8 +23,8 @@ TERMINAL=$(tty) #Gather current terminal session for appropriate redirection
 HEIGHT=20
 WIDTH=76
 CHOICE_HEIGHT=16
-BACKTITLE="Back_Title"
-TITLE="Dynamic Dialog"
+BACKTITLE="win10iso2usb"
+TITLE="Select Windows ISO"
 MENU="Choose a file:"
 
 #Build the menu with variables & dynamic content
