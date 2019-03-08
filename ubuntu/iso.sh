@@ -16,6 +16,7 @@ do
    array[ ($i + 1) ]=$line
    (( i=($i+2) ))
 done < <(find $1 -type f -name "*.iso") #consume file path provided as argument
+#done < <(locate "*.iso") #consume file path provided as argument
 
 #Define parameters for menu
 TERMINAL=$(tty) #Gather current terminal session for appropriate redirection
