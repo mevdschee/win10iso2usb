@@ -2,6 +2,8 @@
 
 #dialog manual: http://www.unixcl.com/2009/12/linux-dialog-utility-short-tutorial.html
 
+#show progress: https://www.tecmint.com/monitor-copy-backup-tar-progress-in-linux-using-pv-command/
+
 #source: https://stackoverflow.com/questions/4889187/dynamic-dialog-menu-box-in-bash
 
 #usage: Dynamic_Menu.bash /home/user/target_directory
