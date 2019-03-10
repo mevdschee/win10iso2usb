@@ -2,9 +2,9 @@
 
 # Steps:
 
-# 1/5 Choose ISO file
-# 2/5 Choose USB drive
-# 3/5 Confirm write
+# 1/5 Choose Windows ISO file
+# 2/5 Choose USB drive to erase
+# 3/5 Confirm erase and write
 # 4/5 Compress install.wim (wimtools/wimlib)
 # 5/5 Partition and copy (sfdisk)
 
