@@ -1,5 +1,7 @@
 #! /bin/bash
 
+#dialog manual: http://www.unixcl.com/2009/12/linux-dialog-utility-short-tutorial.html
+
 #source: https://stackoverflow.com/questions/4889187/dynamic-dialog-menu-box-in-bash
 
 #usage: Dynamic_Menu.bash /home/user/target_directory
@@ -57,3 +59,5 @@ USBDRIVE=${array[ITEM]}
 
 echo $ISOFILE
 echo $USBDRIVE
+
+
