@@ -1,5 +1,13 @@
 #! /bin/bash
 
+# Steps:
+
+# 1/5 Choose ISO file
+# 2/5 Choose USB drive
+# 3/5 Confirm write
+# 4/5 Compress install.wim
+# 5/5 Partition and copy
+
 #dialog manual: http://www.unixcl.com/2009/12/linux-dialog-utility-short-tutorial.html
 
 #show progress: https://www.tecmint.com/monitor-copy-backup-tar-progress-in-linux-using-pv-command/
