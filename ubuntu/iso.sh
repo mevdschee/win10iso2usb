@@ -5,8 +5,8 @@
 # 1/5 Choose ISO file
 # 2/5 Choose USB drive
 # 3/5 Confirm write
-# 4/5 Compress install.wim
-# 5/5 Partition and copy
+# 4/5 Compress install.wim (wimtools/wimlib)
+# 5/5 Partition and copy (sfdisk)
 
 #dialog manual: http://www.unixcl.com/2009/12/linux-dialog-utility-short-tutorial.html
 
