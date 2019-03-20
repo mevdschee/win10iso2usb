@@ -16,19 +16,25 @@
 
 #usage: Dynamic_Menu.bash /home/user/target_directory
 
-declare -a array
+declare -a ISOFILES
 
-i=1 #Index counter for adding to array
+i=1 #Index counter for adding to ISOFILES
 j=1 #Option menu value generator
 
 while read line
 do
-   array[ $i ]=$j
+   ISOFILES[ $i ]=$j
    (( j++ ))
-   array[ ($i + 1) ]=$line
+   ISOFILES[ ($i + 1) ]=$line
    (( i=($i+2) ))
-done < <(find $1 -type f -name "*.iso") #consume file path provided as argument
-#done < <(locate "*.iso") #consume file path provided as argument
+done < <(locate "*.iso") #consume file path provided as argument
+#done < <(find $1 -type f -name "*.iso") #consume file path provided as argument
+
+if [ -z ${ISOFILES[@]} ]; then
+   clear
+   echo No ISO files found
+   exit 0
+fi
 
 #Define parameters for menu
 HEIGHT=20
@@ -36,38 +42,62 @@ WIDTH=76
 CHOICE_HEIGHT=($HEIGHT - 4)
 
 #Build the menu with variables & dynamic content
-CHOICE=$(dialog --clear --backtitle "win10iso2usb" --title "Step 1/3: Select Windows ISO" --menu "Choose a file:" $HEIGHT $WIDTH $CHOICE_HEIGHT "${array[@]}" 2>&1 >$(tty))
+CHOICE=$(dialog --clear --backtitle "win10iso2usb" --title "Step 1/3: Select Windows ISO" --menu "Choose a file:" $HEIGHT $WIDTH $CHOICE_HEIGHT "${ISOFILES[@]}" 2>&1 >$(tty))
 
 if [ -z $CHOICE ]; then
    clear
+   echo Cancelled
    exit 0
 fi
 (( ITEM=($CHOICE * 2) ))
-ISOFILE=${array[ITEM]}
+ISOFILE=${ISOFILES[ITEM]}
 
-i=1 #Index counter for adding to array
+declare -a USBDRIVES
+
+i=1 #Index counter for adding to USBDRIVES
 j=1 #Option menu value generator
 
 while read line
 do
-   array[ $i ]=$j
+   USBDRIVES[ $i ]=$j
    (( j++ ))
-   array[ ($i + 1) ]=$line
+   USBDRIVES[ ($i + 1) ]=$line
    (( i=($i+2) ))
-done < <(lsblk --nodeps -n --output TRAN,NAME,SIZE,VENDOR,MODEL | grep '^usb' | tr -s ' ' | sed 's/ /: /2' | cut '-d ' '-f2-')
+done < <(lsblk --nodeps -n --output TRAN,NAME,SIZE,VENDOR,MODEL | tr -s ' ' | sed 's/ /: /2' | cut '-d ' '-f2-')
+#done < <(lsblk --nodeps -n --output TRAN,NAME,SIZE,VENDOR,MODEL | grep '^usb' | tr -s ' ' | sed 's/ /: /2' | cut '-d ' '-f2-')
+
+if [ -z ${USBDRIVES[@]} ]; then
+   clear
+   echo No USB drives found
+   exit 0
+fi
 
 #Build the menu with variables & dynamic content
-CHOICE=$(dialog --clear --backtitle "win10iso2usb" --title "Step 2/3: Select USB drive" --menu "Choose a drive:" $HEIGHT $WIDTH $CHOICE_HEIGHT "${array[@]}" 2>&1 >$(tty))
+CHOICE=$(dialog --clear --backtitle "win10iso2usb" --title "Step 2/3: Select USB drive" --menu "Choose a drive:" $HEIGHT $WIDTH $CHOICE_HEIGHT "${USBDRIVES[@]}" 2>&1 >$(tty))
 
 if [ -z $CHOICE ]; then
    clear
+   echo Cancelled
    exit 0
 fi
 clear
 (( ITEM=($CHOICE * 2) ))
-USBDRIVE=${array[ITEM]}
+USBDRIVE=${USBDRIVES[ITEM]}
 
 echo $ISOFILE
 echo $USBDRIVE
 
+
+sudo sgdisk 
+# Zap disk
+echo "Zapping disk..."
+sudo sgdisk --zap-all /dev/sdX
+# Set 1 ESP partition and 1 primary ext4 partition
+sudo parted /dev/sdX -s mklabel gpt
+echo "Creating /dev/sdX1..."
+sudo parted /dev/sdX -s mkpart primary fat32 2048s 100%
+sudo parted /dev/sdX -s set 1 msftdata on
+# Format the ESP partition as fat32
+echo "Formatting the ESP partition as fat32..."
+yes | sudo mkfs.fat -F32 /dev/sdX1
 
