@@ -100,7 +100,6 @@ echo $ISOFILE
 echo $USBDRIVE
 
 
-sudo sgdisk 
 # Zap disk
 echo "Zapping disk..."
 sudo sgdisk --zap-all /dev/sdX
