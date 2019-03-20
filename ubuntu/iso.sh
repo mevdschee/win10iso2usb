@@ -36,6 +36,12 @@ if [ -z ${ISOFILES[@]} ]; then
    exit 0
 fi
 
+if [ -z ${ISOFILES[@]} ]; then
+   clear
+   echo "No ISO files found. Exiting."
+   exit 0
+fi
+
 #Define parameters for menu
 HEIGHT=20
 WIDTH=76
@@ -69,6 +75,12 @@ done < <(lsblk --nodeps -n --output TRAN,NAME,SIZE,VENDOR,MODEL | tr -s ' ' | se
 if [ -z ${USBDRIVES[@]} ]; then
    clear
    echo No USB drives found
+   exit 0
+fi
+
+if [ -z ${USBDRIVES[@]} ]; then
+   clear
+   echo "No USB drives found. Exiting."
    exit 0
 fi
 
