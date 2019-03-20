@@ -103,12 +103,12 @@ echo $USBDRIVE
 # Zap disk
 echo "Zapping disk..."
 sudo sgdisk --zap-all /dev/sdX
-# Set 1 ESP partition and 1 primary ext4 partition
+# Create a FAT32 partition and set 'msftdata' flag
 sudo parted /dev/sdX -s mklabel gpt
 echo "Creating /dev/sdX1..."
 sudo parted /dev/sdX -s mkpart primary fat32 2048s 100%
 sudo parted /dev/sdX -s set 1 msftdata on
-# Format the ESP partition as fat32
+# Format the partition as fat32
 echo "Formatting the ESP partition as fat32..."
 yes | sudo mkfs.fat -F32 /dev/sdX1
 
