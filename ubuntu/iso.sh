@@ -100,6 +100,10 @@ echo $ISOFILE
 echo $USBDRIVE
 
 
+
+
+exit 0
+
 # Zap disk
 echo "Zapping disk..."
 sudo sgdisk --zap-all /dev/sdX
@@ -112,3 +116,7 @@ sudo parted /dev/sdX -s set 1 msftdata on
 echo "Formatting the ESP partition as fat32..."
 yes | sudo mkfs.fat -F32 /dev/sdX1
 
+
+
+# compress using wimlib
+# copy to usb
