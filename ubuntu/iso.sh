@@ -48,7 +48,7 @@ WIDTH=76
 CHOICE_HEIGHT=($HEIGHT - 4)
 
 #Build the menu with variables & dynamic content
-CHOICE=$(dialog --clear --backtitle "win10iso2usb" --title "Step 1/3: Select Windows ISO" --menu "Choose a file:" $HEIGHT $WIDTH $CHOICE_HEIGHT "${ISOFILES[@]}" 2>&1 >$(tty))
+CHOICE=$(dialog --backtitle "win10iso2usb" --title "Step 1/3: Select Windows ISO" --menu "\n Choose a file:" $HEIGHT $WIDTH $CHOICE_HEIGHT "${ISOFILES[@]}" 2>&1 >$(tty))
 
 if [ -z $CHOICE ]; then
    clear
@@ -85,7 +85,7 @@ if [ -z ${USBDRIVES[@]} ]; then
 fi
 
 #Build the menu with variables & dynamic content
-CHOICE=$(dialog --clear --backtitle "win10iso2usb" --title "Step 2/3: Select USB drive" --menu "Choose a drive:" $HEIGHT $WIDTH $CHOICE_HEIGHT "${USBDRIVES[@]}" 2>&1 >$(tty))
+CHOICE=$(dialog --backtitle "win10iso2usb" --title "Step 2/3: Select USB drive" --menu "\n Choose a drive:" $HEIGHT $WIDTH $CHOICE_HEIGHT "${USBDRIVES[@]}" 2>&1 >$(tty))
 
 if [ -z $CHOICE ]; then
    clear
@@ -96,19 +96,26 @@ clear
 (( ITEM=($CHOICE * 2) ))
 USBDRIVE=${USBDRIVES[ITEM]}
 
-echo $ISOFILE
-echo $USBDRIVE
 
+dialog --backtitle "win10iso2usb" --title "Step 3/3: Confirm selection" --yesno "\n You are about to write ISO file:\n\n $ISOFILE\n\n to USB drive:\n\n $USBDRIVE\n\n DELETING ALL CONTENTS ON THE USB DRIVE\n\n Are you sure?" $HEIGHT $WIDTH 2>&1 >$(tty)
 
-# Zap disk
-echo "Zapping disk..."
-sudo sgdisk --zap-all /dev/sdX
+if [ $? -gt 0 ]; then
+   clear
+   echo Cancelled
+   exit 0
+fi
+
+#DISK=$(echo $USBDRIVE | cut -d":" -f1)
+DISK=sdX
+
+# Zapping disk /dev/sdX
 # Create a FAT32 partition and set 'msftdata' flag
-sudo parted /dev/sdX -s mklabel gpt
-echo "Creating /dev/sdX1..."
-sudo parted /dev/sdX -s mkpart primary fat32 2048s 100%
-sudo parted /dev/sdX -s set 1 msftdata on
-# Format the partition as fat32
-echo "Formatting the ESP partition as fat32..."
-yes | sudo mkfs.fat -F32 /dev/sdX1
+dialog --backtitle "win10iso2usb" --title "Writing" --infobox "\n  Step 1/5: Zapping disk /dev/$DISK ..." 5 75 ; sudo sgdisk --zap-all /dev/$DISK
+dialog --backtitle "win10iso2usb" --title "Writing" --infobox "\n  Step 2/5: Initialize GPT partition table on /dev/$DISK ..." 5 75 ; sudo parted /dev/$DISK -s mklabel gpt
+dialog --backtitle "win10iso2usb" --title "Writing" --infobox "\n  Step 3/5: Create a FAT32 partition on /dev/$DISK ..." 5 75 ; sudo parted /dev/$DISK -s mkpart primary fat32 2048s 100%
+dialog --backtitle "win10iso2usb" --title "Writing" --infobox "\n  Step 4/5: Set 'msftdata' flag on partition /dev/${DISK}1 ..." 5 75 ; sudo parted /dev/$DISK -s set 1 msftdata on
+dialog --backtitle "win10iso2usb" --title "Writing" --infobox "\n  Step 5/5: Formatting partition /dev/${DISK}1 as FAT32..." 5 75 ; yes | sudo mkfs.fat -F32 /dev/${DISK}1
+dialog --backtitle "win10iso2usb" --title "Writing" --infobox "\n  Done ..." 5 75 ; sleep 0.5
+clear
 
+echo Done
