@@ -118,4 +118,8 @@ dialog --backtitle "win10iso2usb" --title "Writing" --infobox "\n  Step 5/5: For
 dialog --backtitle "win10iso2usb" --title "Writing" --infobox "\n  Done ..." 5 75 ; sleep 0.5
 clear
 
+# compress using wimlib
+# copy to usb
+
 echo Done
+
